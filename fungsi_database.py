@@ -1,22 +1,20 @@
 import mysql.connector
-import os
-from dotenv import load_dotenv
-
-# Muat variabel rahasia dari file .env
-load_dotenv()
+import streamlit as st
 
 def get_db_connection():
-    """Fungsi untuk membuat koneksi ke Database Cloud Aiven"""
+    """Fungsi untuk membuat koneksi ke Database Cloud Aiven via Streamlit Secrets"""
     return mysql.connector.connect(
-        host=os.getenv("DB_HOST"),
-        port=int(os.getenv("DB_PORT")),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-        database=os.getenv("DB_NAME")
+        host=st.secrets["DB_HOST"],
+        port=int(st.secrets["DB_PORT"]),
+        user=st.secrets["DB_USER"],
+        password=st.secrets["DB_PASSWORD"],
+        database=st.secrets["DB_NAME"],
+        # Tambahkan baris ini jika Anda menggunakan SSL/TLS dari Aiven
+        ssl_ca="ca.pem" 
     )
 
 def init_db():
-    """Fungsi untuk inisialisasi tabel tamu jika belum ada di database"""
+    """Fungsi untuk inisialisasi tabel tamu"""
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -34,4 +32,4 @@ def init_db():
         conn.commit()
         conn.close()
     except mysql.connector.Error as err:
-        print(f"Error Database: {err}")
+        st.error(f"Error Database: {err}") # Menggunakan st.error agar tampil di aplikasi
