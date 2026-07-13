@@ -26,7 +26,7 @@ if menu == "Form Kunjungan":
         nama = col1.text_input("Nama Lengkap")
         telp = col2.text_input("Nomor Telepon / WA")
         alamat = st.text_area("Alamat Lengkap")
-        tujuan = st.text_input("Tujuan / Unit Kerja")
+        tujuan = st.text_input("Tujuan")
         
         if st.form_submit_button("Simpan Data"):
             if nama and telp and alamat:
