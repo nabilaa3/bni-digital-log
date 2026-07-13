@@ -18,7 +18,7 @@ if menu == "Form Kunjungan":
     if os.path.exists("BNI.png"):
         c1, c2, c3 = st.columns([1, 2, 1])
         with c2:
-            st.image("BNI.png", use_container_width=True)
+            st.image("BNI.png", use_width='stretch=True)
 
     st.markdown("<div class='bni-title'>📝 Logbook Kunjungan Tamu</div>", unsafe_allow_html=True)
     with st.form("form_tamu", clear_on_submit=True):
