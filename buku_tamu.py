@@ -30,7 +30,7 @@ if menu == "Form Kunjungan":
         
         if st.form_submit_button("Simpan Data"):
             if nama and telp and alamat:
- from datetime import datetime, timedelta
+                from datetime import datetime, timedelta
                 waktu_wita = datetime.utcnow() + timedelta(hours=8)
                 jam_simpan = waktu_wita.strftime("%H:%M:%S")
                 tgl_simpan = waktu_wita.strftime("%Y-%m-%d")
