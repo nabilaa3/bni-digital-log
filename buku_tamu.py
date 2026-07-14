@@ -30,12 +30,17 @@ if menu == "Form Kunjungan":
         
         if st.form_submit_button("Simpan Data"):
             if nama and telp and alamat:
-                jam_simpan = datetime.now().strftime("%H:%M:%S")
+ from datetime import datetime, timedelta
+                waktu_wita = datetime.utcnow() + timedelta(hours=8)
+                jam_simpan = waktu_wita.strftime("%H:%M:%S")
+                tgl_simpan = waktu_wita.strftime("%Y-%m-%d")
+
                 conn = get_db_connection()
                 cursor = conn.cursor()
                 cursor.execute("INSERT INTO tabel_tamu (tgl, jam, nama, alamat, telp, tujuan) VALUES (%s, %s, %s, %s, %s, %s)",
-                               (datetime.now().strftime("%Y-%m-%d"), jam_simpan, nama, alamat, telp, tujuan))
-                conn.commit(); conn.close()
+                               (tgl_simpan, jam_simpan, nama, alamat, telp, tujuan))
+                conn.commit()
+                conn.close()
                 st.success("Data berhasil disimpan!")
             else: st.error("Mohon lengkapi semua kolom!")
 
