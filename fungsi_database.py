@@ -2,17 +2,18 @@ import mysql.connector
 import streamlit as st
 
 def get_db_connection():
-    """Koneksi database menggunakan Streamlit Secrets"""
+    """Fungsi untuk membuat koneksi ke Database Cloud Aiven"""
     return mysql.connector.connect(
         host=st.secrets["DB_HOST"],
         port=int(st.secrets["DB_PORT"]),
         user=st.secrets["DB_USER"],
         password=st.secrets["DB_PASSWORD"],
         database=st.secrets["DB_NAME"],
-        ssl_ca="ca.pem"  # Pastikan file ca.pem ada di GitHub Anda
+        ssl_verify_cert=False
     )
 
 def init_db():
+    """Fungsi untuk inisialisasi tabel tamu jika belum ada di database"""
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -29,5 +30,5 @@ def init_db():
         """)
         conn.commit()
         conn.close()
-    except Exception as e:
-        st.error(f"Error Database: {e}")
+    except mysql.connector.Error as err:
+        st.error(f"Error Database: {err}")
