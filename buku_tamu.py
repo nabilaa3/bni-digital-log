@@ -20,7 +20,7 @@ if menu == "Form Kunjungan":
         with c2:
             st.image("BNI.png", width=200)
 
-    st.markdown("<div class='bni-title'>📝 Logbook Kunjungan Tamu</div>", unsafe_allow_html=True)
+    st.markdown("<div class='bni-title'>📝 Buku Tamu</div>", unsafe_allow_html=True)
     with st.form("form_tamu", clear_on_submit=True):
         col1, col2 = st.columns(2)
         nama = col1.text_input("Nama Lengkap")
