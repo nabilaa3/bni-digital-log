@@ -3,6 +3,19 @@ import streamlit as st
 def atur_tampilan_bni():
     st.markdown("""
         <style>
+        /* CSS untuk Full Layar dan Sembunyikan Navigasi */
+        #MainMenu {visibility: hidden;}
+        header {visibility: hidden;}
+        footer {visibility: hidden;}
+        section[data-testid="stSidebar"] {display: none;}
+        
+        .block-container {
+            max-width: 95% !important;
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
+        }
+
+        /* CSS Styling Anda */
         .stApp { background-color: #f8f9fa; }
         .bni-title { color: #005E6A; font-weight: 800; font-size: 32px; border-bottom: 3px solid #E55300; padding-bottom: 10px; margin-bottom: 20px; }
         div[data-testid="stForm"] { background-color: #ffffff; padding: 30px; border-radius: 15px; border: 1px solid #e0e0e0; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
