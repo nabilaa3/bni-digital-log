@@ -14,11 +14,11 @@ menu = st.sidebar.selectbox("Menu Navigasi", ["Form Kunjungan", "Buka Rekapitula
 
 # HALAMAN 1: FORM
 if menu == "Form Kunjungan":
-    # LOGO DIPINDAH KE TENGAH DI SINI
+    # LOGO DIPINDAH KE TENGAH (Disesuaikan posisinya)
     if os.path.exists("BNI.png"):
-        c1, c2, c3 = st.columns([1, 2, 1])
+        c1, c2, c3 = st.columns([2, 1, 2])
         with c2:
-            st.image("BNI.png", width=250)
+            st.image("BNI.png", width=200)
 
     st.markdown("<div class='bni-title'>📝 Logbook Kunjungan Tamu</div>", unsafe_allow_html=True)
     with st.form("form_tamu", clear_on_submit=True):
