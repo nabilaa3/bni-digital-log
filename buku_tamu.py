@@ -80,7 +80,7 @@ else:
         # Index default mengambil waktu saat ini agar saat dibuka langsung menunjukkan hari ini.
         hari = c1.selectbox("Tanggal", ["-"] + list(range(1, 32)), index=datetime.now().day)
         bulan = c2.selectbox("Bulan", ["-"] + list(range(1, 13)), index=datetime.now().month)
-        tahun = c3.selectbox("Tahun", [2025, 2026, 2027], index=1)
+        tahun = c3.selectbox("Tahun", [2026, 2027, 2028, 2029, 2030], index=1)
         nama_cari = c4.text_input("Cari Nama Tamu:")
         
         if st.button("Cari Sekarang"):
