@@ -23,9 +23,9 @@ if menu == "Form Kunjungan":
     st.markdown("<div class='bni-title'>📝 Buku Tamu</div>", unsafe_allow_html=True)
     with st.form("form_tamu", clear_on_submit=True):
         col1, col2 = st.columns(2)
-        nama = col1.text_input("Nama Lengkap")
+        nama = col1.text_input("Nama")
         telp = col2.text_input("Nomor Telepon / WA")
-        alamat = st.text_area("Alamat Lengkap")
+        alamat = st.text_area("Alamat")
         tujuan = st.text_input("Tujuan")
         
         if st.form_submit_button("Simpan Data"):
@@ -73,21 +73,30 @@ else:
     pwd = st.text_input("Masukkan Sandi Admin:", type="password")
     
     if pwd == "admin123":
-        st.success("Akses Diterima!")
+        st.success("Akses Diterima!") 
         
         c1, c2, c3, c4 = st.columns(4)
-        hari = c1.selectbox("Tanggal", range(1, 32), index=datetime.now().day-1)
-        bulan = c2.selectbox("Bulan", range(1, 13), index=datetime.now().month-1)
-        tahun = c3.selectbox("Tahun", [2025, 2026, 2027], index=1)
+        hari = c1.selectbox("Tanggal", ["Semua"] + list(range(1, 32)))
+        bulan = c2.selectbox("Bulan", ["Semua"] + list(range(1, 13)))
+        tahun = c3.selectbox("Tahun", ["Semua", 2025, 2026, 2027])
         nama_cari = c4.text_input("Cari Nama Tamu:")
         
         if st.button("Cari Sekarang"):
-            tanggal_str = f"{tahun}-{bulan:02d}-{hari:02d}"
             try:
                 conn = get_db_connection()
                 cursor = conn.cursor()
-                query = "SELECT tgl, jam, nama, alamat, telp, tujuan FROM tabel_tamu WHERE tgl = %s"
-                params = [tanggal_str]
+                query = "SELECT tgl, jam, nama, alamat, telp, tujuan FROM tabel_tamu WHERE 1=1"
+                params = []
+                
+                if hari != "Semua":
+                    query += " AND DAY(tgl) = %s"
+                    params.append(hari)
+                if bulan != "Semua":
+                    query += " AND MONTH(tgl) = %s"
+                    params.append(bulan)
+                if tahun != "Semua":
+                    query += " AND YEAR(tgl) = %s"
+                    params.append(tahun)
                 
                 if nama_cari:
                     query += " AND nama LIKE %s"
