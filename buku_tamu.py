@@ -74,42 +74,26 @@ else:
     if pwd == "admin123":
         st.success("Akses Diterima!") 
         
-        c1, c2, c3, c4, c5 = st.columns(5)
-        hari = c1.selectbox("Tanggal", ["Semua"] + list(range(1, 32)))
-        bulan = c2.selectbox("Bulan", ["Semua"] + list(range(1, 13)))
-        tahun = c3.selectbox("Tahun", ["Semua", 2025, 2026, 2027])
-        jenis_rekapan = c4.selectbox("Opsi Rekap", ["Tampilkan Sesuai Filter", "Rekap Juli Saja", "Rekap Tahun 2026 Saja"])
-        nama_cari = c5.text_input("Cari Nama Tamu:")
+        c1, c2, c3, c4 = st.columns(4)
+        # Opsi tanpa "Semua"
+        hari = c1.selectbox("Tanggal", list(range(1, 32)), index=datetime.now().day-1)
+        bulan = c2.selectbox("Bulan", list(range(1, 13)), index=datetime.now().month-1)
+        tahun = c3.selectbox("Tahun", [2025, 2026, 2027], index=1)
+        nama_cari = c4.text_input("Cari Nama Tamu:")
         
         if st.button("Cari Sekarang"):
             try:
                 conn = get_db_connection()
                 cursor = conn.cursor()
-                query = "SELECT tgl, jam, nama, alamat, telp, tujuan FROM tabel_tamu WHERE 1=1"
-                params = []
-                
-                # Logika Filter Baru
-                if jenis_rekapan == "Rekap Juli Saja":
-                    query += " AND MONTH(tgl) = 7"
-                elif jenis_rekapan == "Rekap Tahun 2026 Saja":
-                    query += " AND YEAR(tgl) = 2026"
-                else:
-                    # Logika Filter Manual
-                    if hari != "Semua":
-                        query += " AND DAY(tgl) = %s"
-                        params.append(hari)
-                    if bulan != "Semua":
-                        query += " AND MONTH(tgl) = %s"
-                        params.append(bulan)
-                    if tahun != "Semua":
-                        query += " AND YEAR(tgl) = %s"
-                        params.append(tahun)
+                # Query sekarang menggunakan filter bulan dan tahun yang dipilih
+                query = "SELECT tgl, jam, nama, alamat, telp, tujuan FROM tabel_tamu WHERE DAY(tgl) = %s AND MONTH(tgl) = %s AND YEAR(tgl) = %s"
+                params = [hari, bulan, tahun]
                 
                 if nama_cari:
                     query += " AND nama LIKE %s"
                     params.append(f"%{nama_cari}%")
                 
-                query += " ORDER BY tgl DESC, jam DESC"
+                query += " ORDER BY jam DESC"
                 
                 cursor.execute(query, tuple(params))
                 data = cursor.fetchall()
@@ -122,7 +106,7 @@ else:
                         tabel_output.append({"Tanggal": r[0], "Jam": jam_formatted, "Nama": r[2], "Alamat": r[3], "Kontak": r[4], "Tujuan": r[5]})
                     st.table(tabel_output)
                 else:
-                    st.info("Tidak ada data ditemukan.")
+                    st.info("Tidak ada data ditemukan untuk kriteria tersebut.")
             except Exception as e:
                 st.error(f"Error memuat data: {e}")
     elif pwd:
