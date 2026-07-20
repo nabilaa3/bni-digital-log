@@ -9,7 +9,7 @@ st.set_page_config(page_title="Digital Log Kunjungan BNI", page_icon="🏦", lay
 init_db()
 atur_tampilan_bni()
 
-# SIDEBAR (Logo dihapus dari sini)
+# SIDEBAR
 menu = st.sidebar.selectbox("Menu Navigasi", ["Form Kunjungan", "Buka Rekapitulasi"])
 
 # HALAMAN 1: FORM
@@ -75,9 +75,11 @@ else:
         st.success("Akses Diterima!") 
         
         c1, c2, c3, c4 = st.columns(4)
-        # Opsi tanpa "Semua"
-        hari = c1.selectbox("Tanggal", list(range(1, 32)), index=datetime.now().day-1)
-        bulan = c2.selectbox("Bulan", list(range(1, 13)), index=datetime.now().month-1)
+        
+        # Tambahan "-" di awal list sebagai opsi kosong.
+        # Index default mengambil waktu saat ini agar saat dibuka langsung menunjukkan hari ini.
+        hari = c1.selectbox("Tanggal", ["-"] + list(range(1, 32)), index=datetime.now().day)
+        bulan = c2.selectbox("Bulan", ["-"] + list(range(1, 13)), index=datetime.now().month)
         tahun = c3.selectbox("Tahun", [2025, 2026, 2027], index=1)
         nama_cari = c4.text_input("Cari Nama Tamu:")
         
@@ -85,15 +87,29 @@ else:
             try:
                 conn = get_db_connection()
                 cursor = conn.cursor()
-                # Query sekarang menggunakan filter bulan dan tahun yang dipilih
-                query = "SELECT tgl, jam, nama, alamat, telp, tujuan FROM tabel_tamu WHERE DAY(tgl) = %s AND MONTH(tgl) = %s AND YEAR(tgl) = %s"
-                params = [hari, bulan, tahun]
+                
+                query = "SELECT tgl, jam, nama, alamat, telp, tujuan FROM tabel_tamu WHERE 1=1"
+                params = []
+                
+                # Filter Tahun (Pasti jalan karena tidak ada opsi kosong)
+                query += " AND YEAR(tgl) = %s"
+                params.append(tahun)
+                
+                # Filter Bulan (Jalan kalau pengguna tidak memilih "-")
+                if bulan != "-":
+                    query += " AND MONTH(tgl) = %s"
+                    params.append(bulan)
+                
+                # Filter Tanggal (Jalan kalau pengguna tidak memilih "-")
+                if hari != "-":
+                    query += " AND DAY(tgl) = %s"
+                    params.append(hari)
                 
                 if nama_cari:
                     query += " AND nama LIKE %s"
                     params.append(f"%{nama_cari}%")
                 
-                query += " ORDER BY jam DESC"
+                query += " ORDER BY tgl DESC, jam DESC"
                 
                 cursor.execute(query, tuple(params))
                 data = cursor.fetchall()
