@@ -76,9 +76,9 @@ else:
         st.success("Akses Diterima!") 
         
         c1, c2, c3, c4 = st.columns(4)
-        hari = c1.selectbox("Tanggal", ["Semua"] + list(range(1, 32)))
-        bulan = c2.selectbox("Bulan", ["Semua"] + list(range(1, 13)))
-        tahun = c3.selectbox("Tahun", ["Semua", 2025, 2026, 2027])
+        hari = c1.selectbox("Tanggal", ["Semua"] + list(range(1, 32)), index=0)
+        bulan = c2.selectbox("Bulan", ["Semua"] + list(range(1, 13)), index=0)
+        tahun = c3.selectbox("Tahun", ["Semua", 2025, 2026, 2027], index=0)
         nama_cari = c4.text_input("Cari Nama Tamu:")
         
         if st.button("Cari Sekarang"):
@@ -102,6 +102,9 @@ else:
                     query += " AND nama LIKE %s"
                     params.append(f"%{nama_cari}%")
                 
+                # Menambahkan pengurutan agar data terbaru muncul di atas
+                query += " ORDER BY tgl DESC, jam DESC"
+                
                 cursor.execute(query, tuple(params))
                 data = cursor.fetchall()
                 conn.close()
@@ -113,7 +116,7 @@ else:
                         tabel_output.append({"Tanggal": r[0], "Jam": jam_formatted, "Nama": r[2], "Alamat": r[3], "Kontak": r[4], "Tujuan": r[5]})
                     st.table(tabel_output)
                 else:
-                    st.info("Tidak ada data ditemukan.")
+                    st.info("Tidak ada data ditemukan untuk kriteria tersebut.")
             except Exception as e:
                 st.error(f"Error memuat data: {e}")
     elif pwd:
